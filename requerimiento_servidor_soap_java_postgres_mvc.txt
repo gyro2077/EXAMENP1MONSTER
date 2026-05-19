@@ -1,0 +1,590 @@
+REQUERIMIENTO PARA AGENTE DE DESARROLLO
+SERVIDOR FEDERACIÓN DE FÚTBOL - SOAP JAVA + POSTGRESQL + MVC + PAYARA
+
+Contexto general
+----------------
+Se necesita implementar únicamente el servidor de la aplicación "Federación de Fútbol".
+Este servidor será consumido posteriormente por otro sistema llamado "TicketPremium".
+El servidor debe exponer Web Services SOAP en Java, usar PostgreSQL como base de datos,
+respetar una arquitectura MVC por capas y desplegarse en Payara.
+
+No implementar REST.
+No implementar la aplicación cliente TicketPremium.
+No implementar facturación, IVA, compras ni reporte de ventas en este servidor.
+Este servidor solo gestiona partidos, localidades, precios, disponibilidad y decremento de disponibilidad.
+
+Tecnologías obligatorias
+------------------------
+- Java EE / Jakarta EE
+- SOAP Web Services
+- PostgreSQL
+- JPA
+- EJB / CDI según versión usada
+- Payara Server
+- Maven
+- Empaquetado WAR
+- Arquitectura MVC por capas
+
+Nombre sugerido del proyecto
+----------------------------
+federacion-soap-server
+
+Nombre sugerido del WAR
+-----------------------
+federacion-soap-server.war
+
+Base de datos
+-------------
+Nombre sugerido:
+federacion_db
+
+Datasource en Payara:
+jdbc/FederacionDS
+
+URL PostgreSQL:
+jdbc:postgresql://localhost:5432/federacion_db
+
+Usuario sugerido:
+postgres
+
+Contraseña sugerida:
+postgres
+
+Estructura de paquetes sugerida
+-------------------------------
+src/main/java
+└── ec.edu.espe.federacion
+    ├── model
+    │   ├── PartidoFutbol.java
+    │   └── LocalidadPartido.java
+    │
+    ├── dto
+    │   ├── PartidoDTO.java
+    │   ├── LocalidadDTO.java
+    │   └── ResultadoOperacionDTO.java
+    │
+    ├── repository
+    │   ├── PartidoRepository.java
+    │   └── LocalidadRepository.java
+    │
+    ├── service
+    │   └── FederacionService.java
+    │
+    └── soap
+        └── FederacionWebService.java
+
+src/main/resources
+└── META-INF
+    └── persistence.xml
+
+Arquitectura MVC aplicada al servidor
+-------------------------------------
+Aunque el servidor no tendrá pantallas, debe respetar la separación por capas:
+
+Model:
+- Entidades JPA.
+- DTOs usados para enviar información por SOAP.
+
+Controller:
+- Web Service SOAP.
+- Clase: FederacionWebService.java
+
+Service:
+- Lógica de negocio.
+- Validaciones.
+- Reglas de disponibilidad.
+- Clase: FederacionService.java
+
+Repository:
+- Acceso a datos con JPA.
+- Consultas a PostgreSQL.
+- Clases: PartidoRepository.java y LocalidadRepository.java
+
+Requerimientos funcionales del servidor
+---------------------------------------
+
+RF-SERV-01: Implementar tabla PARTIDO_FUTBOL
+--------------------------------------------
+La tabla debe almacenar los partidos de fútbol.
+
+Campos:
+- CODIGO: identificador del partido.
+- EQUIPO_LOCAL: nombre del equipo local.
+- EQUIPO_VISITA: nombre del equipo visitante.
+- FECHA: fecha y hora del partido.
+- LUGAR: lugar donde se realizará el partido.
+
+Script SQL recomendado:
+
+CREATE TABLE partido_futbol (
+    codigo SERIAL PRIMARY KEY,
+    equipo_local VARCHAR(100) NOT NULL,
+    equipo_visita VARCHAR(100) NOT NULL,
+    fecha TIMESTAMP NOT NULL,
+    lugar VARCHAR(150) NOT NULL
+);
+
+Criterio de aceptación:
+- La tabla existe.
+- Tiene al menos 5 registros de prueba.
+- Permite consultar partidos cuya fecha sea mayor o igual a la fecha actual.
+
+RF-SERV-02: Implementar tabla LOCALIDAD_PARTIDO
+-----------------------------------------------
+La tabla debe almacenar las localidades disponibles para cada partido.
+
+Campos:
+- ID: identificador interno.
+- CODIGO_PARTIDO: referencia al partido.
+- CODIGO_LOCALIDAD: código de localidad, por ejemplo GENERAL, TRIBUNA, PALCO.
+- DISPONIBILIDAD: número de boletos disponibles.
+- PRECIO: precio unitario de la localidad.
+
+Script SQL recomendado:
+
+CREATE TABLE localidad_partido (
+    id SERIAL PRIMARY KEY,
+    codigo_partido INTEGER NOT NULL,
+    codigo_localidad VARCHAR(50) NOT NULL,
+    disponibilidad INTEGER NOT NULL,
+    precio NUMERIC(10,2) NOT NULL,
+
+    CONSTRAINT fk_localidad_partido
+        FOREIGN KEY (codigo_partido)
+        REFERENCES partido_futbol(codigo),
+
+    CONSTRAINT uk_partido_localidad
+        UNIQUE (codigo_partido, codigo_localidad),
+
+    CONSTRAINT chk_disponibilidad
+        CHECK (disponibilidad >= 0),
+
+    CONSTRAINT chk_precio
+        CHECK (precio >= 0)
+);
+
+Relación:
+PARTIDO_FUTBOL 1 ---- N LOCALIDAD_PARTIDO
+
+Criterio de aceptación:
+- La tabla existe.
+- Está relacionada con PARTIDO_FUTBOL.
+- Tiene al menos 20 registros de prueba.
+- No permite disponibilidad negativa.
+- No permite precio negativo.
+- No permite duplicar la misma localidad para el mismo partido.
+
+RF-SERV-03: Web Service SOAP para listar partidos disponibles
+-------------------------------------------------------------
+Debe existir una operación SOAP que devuelva los partidos disponibles.
+
+Nombre de operación:
+listarPartidosDisponibles()
+
+Regla de negocio:
+Un partido está disponible si:
+fecha >= CURRENT_TIMESTAMP
+
+Consulta lógica:
+SELECT *
+FROM partido_futbol
+WHERE fecha >= CURRENT_TIMESTAMP
+ORDER BY fecha ASC;
+
+Debe retornar una lista de PartidoDTO con:
+- codigo
+- equipoLocal
+- equipoVisita
+- fecha
+- lugar
+
+Criterio de aceptación:
+- El método existe en el WSDL.
+- Retorna solo partidos actuales o futuros.
+- No retorna partidos pasados.
+- Ordena los partidos por fecha ascendente.
+
+RF-SERV-04: Web Service SOAP para listar localidades disponibles
+----------------------------------------------------------------
+Debe existir una operación SOAP que reciba el código del partido y devuelva sus localidades disponibles.
+
+Nombre de operación:
+listarLocalidadesDisponibles(Integer codigoPartido)
+
+Regla de negocio:
+Una localidad está disponible si:
+disponibilidad > 0
+
+Consulta lógica:
+SELECT *
+FROM localidad_partido
+WHERE codigo_partido = ?
+AND disponibilidad > 0
+ORDER BY codigo_localidad ASC;
+
+Debe retornar una lista de LocalidadDTO con:
+- codigoLocalidad
+- disponibilidad
+- precio
+
+Validaciones:
+- El código del partido no debe ser nulo.
+- Debe devolver solo localidades con disponibilidad mayor a cero.
+- No debe devolver localidades agotadas.
+
+Criterio de aceptación:
+- El método existe en el WSDL.
+- Recibe como parámetro el código del partido.
+- Devuelve únicamente localidades disponibles.
+- Incluye el precio de cada localidad.
+
+RF-SERV-05: Web Service SOAP para decrementar disponibilidad
+------------------------------------------------------------
+Debe existir una operación SOAP que reduzca la disponibilidad de una localidad.
+
+Nombre de operación:
+decrementarDisponibilidad(Integer codigoPartido, String codigoLocalidad, Integer cantidad)
+
+Parámetros:
+- codigoPartido
+- codigoLocalidad
+- cantidad
+
+Reglas de negocio:
+- El partido debe existir.
+- La localidad debe existir para ese partido.
+- La cantidad debe ser mayor que cero.
+- Debe existir disponibilidad suficiente.
+- La disponibilidad nunca puede quedar negativa.
+- La operación debe ser transaccional.
+
+Respuesta recomendada:
+ResultadoOperacionDTO
+
+Campos de ResultadoOperacionDTO:
+- exitoso: Boolean
+- mensaje: String
+- disponibilidadActual: Integer
+
+Mensajes sugeridos:
+- "Datos incompletos."
+- "La cantidad debe ser mayor a cero."
+- "El partido no existe."
+- "La localidad no existe para el partido seleccionado."
+- "No existe disponibilidad suficiente."
+- "Disponibilidad actualizada correctamente."
+
+Control de concurrencia recomendado:
+Usar bloqueo pesimista con JPA:
+
+setLockMode(LockModeType.PESSIMISTIC_WRITE)
+
+O lógica equivalente en SQL:
+
+SELECT *
+FROM localidad_partido
+WHERE codigo_partido = ?
+AND codigo_localidad = ?
+FOR UPDATE;
+
+Luego actualizar la disponibilidad.
+
+Criterio de aceptación:
+- El método existe en el WSDL.
+- Descuenta correctamente la cantidad solicitada.
+- No permite ventas con disponibilidad insuficiente.
+- No permite disponibilidad negativa.
+- Retorna mensaje claro de éxito o error.
+- Maneja concurrencia para evitar sobreventa.
+
+Datos mínimos de prueba
+-----------------------
+
+Insertar al menos 5 partidos:
+
+INSERT INTO partido_futbol (equipo_local, equipo_visita, fecha, lugar) VALUES
+('Liga de Quito', 'Barcelona SC', '2026-06-15 19:00:00', 'Estadio Rodrigo Paz Delgado'),
+('Emelec', 'Aucas', '2026-06-20 18:00:00', 'Estadio George Capwell'),
+('Independiente del Valle', 'El Nacional', '2026-06-25 17:00:00', 'Estadio Banco Guayaquil'),
+('Deportivo Cuenca', 'Delfín SC', '2026-07-01 20:00:00', 'Estadio Alejandro Serrano Aguilar'),
+('Universidad Católica', 'Mushuc Runa', '2026-07-05 16:00:00', 'Estadio Olímpico Atahualpa');
+
+Insertar al menos 20 localidades:
+
+INSERT INTO localidad_partido (codigo_partido, codigo_localidad, disponibilidad, precio) VALUES
+(1, 'GENERAL', 500, 10.00),
+(1, 'TRIBUNA', 300, 20.00),
+(1, 'PALCO', 100, 35.00),
+(1, 'GENERAL VISITA', 150, 10.00),
+
+(2, 'GENERAL', 600, 8.00),
+(2, 'TRIBUNA', 250, 18.00),
+(2, 'PALCO', 80, 30.00),
+(2, 'GENERAL VISITA', 120, 8.00),
+
+(3, 'GENERAL', 400, 12.00),
+(3, 'TRIBUNA', 200, 22.00),
+(3, 'PALCO', 70, 40.00),
+(3, 'PREFERENCIA', 160, 15.00),
+
+(4, 'GENERAL', 700, 9.00),
+(4, 'TRIBUNA', 280, 19.00),
+(4, 'PALCO', 90, 32.00),
+(4, 'PREFERENCIA', 130, 14.00),
+
+(5, 'GENERAL', 450, 10.00),
+(5, 'TRIBUNA', 220, 21.00),
+(5, 'PALCO', 60, 38.00),
+(5, 'GENERAL VISITA', 110, 10.00);
+
+Entidades JPA requeridas
+------------------------
+
+PartidoFutbol.java
+Debe mapear la tabla partido_futbol.
+
+Atributos:
+- Integer codigo
+- String equipoLocal
+- String equipoVisita
+- LocalDateTime fecha
+- String lugar
+- List<LocalidadPartido> localidades
+
+Anotaciones esperadas:
+- @Entity
+- @Table(name = "partido_futbol")
+- @Id
+- @GeneratedValue(strategy = GenerationType.IDENTITY)
+- @OneToMany(mappedBy = "partido")
+
+LocalidadPartido.java
+Debe mapear la tabla localidad_partido.
+
+Atributos:
+- Integer id
+- String codigoLocalidad
+- Integer disponibilidad
+- BigDecimal precio
+- PartidoFutbol partido
+
+Anotaciones esperadas:
+- @Entity
+- @Table(name = "localidad_partido")
+- @Id
+- @GeneratedValue(strategy = GenerationType.IDENTITY)
+- @ManyToOne
+- @JoinColumn(name = "codigo_partido")
+
+DTOs requeridos
+---------------
+
+PartidoDTO.java
+Campos:
+- Integer codigo
+- String equipoLocal
+- String equipoVisita
+- LocalDateTime fecha
+- String lugar
+
+LocalidadDTO.java
+Campos:
+- String codigoLocalidad
+- Integer disponibilidad
+- BigDecimal precio
+
+ResultadoOperacionDTO.java
+Campos:
+- Boolean exitoso
+- String mensaje
+- Integer disponibilidadActual
+
+Repositories requeridos
+-----------------------
+
+PartidoRepository.java
+Responsabilidades:
+- buscarPartidosDisponibles()
+- buscarPorCodigo(Integer codigo)
+
+Consulta principal:
+SELECT p FROM PartidoFutbol p
+WHERE p.fecha >= :fechaActual
+ORDER BY p.fecha ASC
+
+LocalidadRepository.java
+Responsabilidades:
+- buscarLocalidadesDisponibles(Integer codigoPartido)
+- buscarParaActualizar(Integer codigoPartido, String codigoLocalidad)
+- actualizar(LocalidadPartido localidad)
+
+Consulta para localidades disponibles:
+SELECT l FROM LocalidadPartido l
+WHERE l.partido.codigo = :codigoPartido
+AND l.disponibilidad > 0
+ORDER BY l.codigoLocalidad ASC
+
+Consulta para actualización:
+Debe usar LockModeType.PESSIMISTIC_WRITE para evitar sobreventa.
+
+Service requerido
+-----------------
+
+FederacionService.java
+
+Métodos:
+- List<PartidoDTO> listarPartidosDisponibles()
+- List<LocalidadDTO> listarLocalidadesDisponibles(Integer codigoPartido)
+- ResultadoOperacionDTO decrementarDisponibilidad(Integer codigoPartido, String codigoLocalidad, Integer cantidad)
+
+Responsabilidades:
+- Aplicar reglas de negocio.
+- Validar datos.
+- Convertir entidades a DTOs.
+- Coordinar repositories.
+- Manejar transacción en decremento de disponibilidad.
+
+SOAP Web Service requerido
+--------------------------
+
+FederacionWebService.java
+
+Anotaciones:
+- @WebService(serviceName = "FederacionWebService")
+- @WebMethod
+- @WebParam
+
+Operaciones SOAP:
+1. listarPartidosDisponibles()
+2. listarLocalidadesDisponibles(codigoPartido)
+3. decrementarDisponibilidad(codigoPartido, codigoLocalidad, cantidad)
+
+El WSDL esperado debe quedar disponible en una URL similar a:
+http://localhost:8080/federacion-soap-server/FederacionWebService?wsdl
+
+persistence.xml requerido
+-------------------------
+
+Debe crearse en:
+src/main/resources/META-INF/persistence.xml
+
+Configuración esperada para Jakarta / Payara 6:
+
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence
+             https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
+             version="3.0">
+
+    <persistence-unit name="FederacionPU" transaction-type="JTA">
+        <jta-data-source>jdbc/FederacionDS</jta-data-source>
+
+        <class>ec.edu.espe.federacion.model.PartidoFutbol</class>
+        <class>ec.edu.espe.federacion.model.LocalidadPartido</class>
+
+        <properties>
+            <property name="jakarta.persistence.schema-generation.database.action" value="none"/>
+            <property name="eclipselink.logging.level" value="INFO"/>
+        </properties>
+    </persistence-unit>
+
+</persistence>
+
+pom.xml recomendado para Payara 6
+---------------------------------
+
+Usar si se trabaja con jakarta.*:
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>ec.edu.espe</groupId>
+    <artifactId>federacion-soap-server</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>war</packaging>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>jakarta.platform</groupId>
+            <artifactId>jakarta.jakartaee-api</artifactId>
+            <version>10.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.7.3</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <finalName>federacion-soap-server</finalName>
+    </build>
+
+</project>
+
+Notas de compatibilidad Payara
+------------------------------
+
+Si se usa Payara 6 o superior:
+- Usar paquetes jakarta.*
+- Usar Jakarta EE 10
+- Java 17 recomendado
+
+Si se usa Payara 5:
+- Usar paquetes javax.*
+- Usar Java EE 8
+- Cambiar dependencias Maven a javax
+- Cambiar imports de jakarta a javax
+
+Criterios finales de aceptación
+-------------------------------
+
+El servidor se considera terminado si cumple:
+
+1. Existe una base PostgreSQL llamada federacion_db.
+2. Existe la tabla partido_futbol.
+3. Existe la tabla localidad_partido.
+4. La relación partido-localidad está correctamente implementada.
+5. Hay al menos 5 partidos de prueba.
+6. Hay al menos 20 localidades de prueba.
+7. El proyecto compila como WAR.
+8. El proyecto despliega correctamente en Payara.
+9. Existe el WSDL del servicio SOAP.
+10. El WSDL muestra las operaciones:
+    - listarPartidosDisponibles
+    - listarLocalidadesDisponibles
+    - decrementarDisponibilidad
+11. listarPartidosDisponibles retorna solo partidos con fecha actual o futura.
+12. listarLocalidadesDisponibles retorna solo localidades con disponibilidad mayor a cero.
+13. decrementarDisponibilidad descuenta correctamente.
+14. decrementarDisponibilidad no permite disponibilidad negativa.
+15. El código respeta separación MVC por capas:
+    - model
+    - dto
+    - repository
+    - service
+    - soap/controller
+
+Importante
+----------
+El objetivo no es crear funcionalidades adicionales.
+No crear CRUD de mantenimiento.
+No crear pantallas.
+No crear TicketPremium.
+No crear reportes.
+No crear facturación.
+Solo implementar el servidor SOAP de Federación de Fútbol.
