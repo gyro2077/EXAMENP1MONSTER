@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="ec.edu.espe.ticketpremium.controllers.LoginController"
+           styleClass="root" stylesheets="@../styles/main.css">
+
+    <VBox alignment="CENTER" spacing="0">
+        <HBox styleClass="login-container" alignment="CENTER">
+
+            <VBox styleClass="login-left" spacing="20" alignment="CENTER" HBox.hgrow="always">
+                <padding>
+                    <Insets bottom="40" left="60" right="60" top="40"/>
+                </padding>
+                <Label text="⚽" styleClass="login-logo-icon"/>
+                <Label text="TICKET PREMIUM" styleClass="login-brand"/>
+                <Label text="Experiencia VIP en los mejores estadios" styleClass="login-tagline" wrapText="true"/>
+                <Separator styleClass="login-divider"/>
+                <VBox spacing="12" alignment="CENTER">
+                    <HBox spacing="10" alignment="CENTER">
+                        <StackPane styleClass="live-indicator">
+                            <Label text="●" styleClass="live-dot"/>
+                        </StackPane>
+                        <Label text="EN VIVO 2026" styleClass="live-tag"/>
+                    </HBox>
+                    <Label text="Liga de Quito vs Barcelona" styleClass="login-match"/>
+                    <Label text="Estadio Rodrigo Paz Delgado" styleClass="login-stadium"/>
+                </VBox>
+            </VBox>
+
+            <VBox styleClass="login-right" spacing="25" alignment="CENTER" HBox.hgrow="always">
+                <padding>
+                    <Insets bottom="50" left="50" right="50" top="50"/>
+                </padding>
+
+                <VBox spacing="8" alignment="CENTER">
+                    <Label text="Bienvenido" styleClass="login-title"/>
+                    <Label text="Ingrese sus credenciales para acceder" styleClass="login-subtitle"/>
+                </VBox>
+
+                <VBox styleClass="form-container" spacing="18" maxWidth="380">
+                    <VBox spacing="8">
+                        <Label text="USUARIO" styleClass="input-label"/>
+                        <TextField fx:id="txtUsername" promptText="Ingrese su usuario"
+                                   styleClass="modern-input"/>
+                    </VBox>
+
+                    <VBox spacing="8">
+                        <HBox spacing="0">
+                            <Label text="CONTRASEÑA" styleClass="input-label"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                        </HBox>
+                        <PasswordField fx:id="txtPassword" promptText="••••••••"
+                                       styleClass="modern-input"/>
+                    </VBox>
+
+                    <Button text="Iniciar Sesion" styleClass="btn-primary" onAction="#onLoginClick" maxWidth="Infinity">
+                        <cursor>
+                            <Cursor fx:constant="HAND"/>
+                        </cursor>
+                    </Button>
+                </VBox>
+
+                <Label fx:id="lblError" styleClass="error-label" visible="false" managed="false"/>
+                <Label fx:id="lblLoading" text="Conectando..." styleClass="loading-label" visible="false" managed="false"/>
+            </VBox>
+        </HBox>
+    </VBox>
+</StackPane>

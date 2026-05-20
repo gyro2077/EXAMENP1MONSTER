@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="ec.edu.espe.ticketpremium.controllers.FacturaController"
+            styleClass="content-area">
+
+    <top>
+        <HBox spacing="15" alignment="CENTER_LEFT" styleClass="factura-topbar">
+            <padding>
+                <Insets bottom="20" left="30" right="30" top="20"/>
+            </padding>
+            <Button fx:id="btnVolver" text="← Volver" styleClass="btn-back" onAction="#onVolver"/>
+            <Label text="Comprobante de Compra" styleClass="factura-topbar-title"/>
+        </HBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="modern-scroll">
+            <VBox spacing="25" styleClass="page-content" alignment="TOP_CENTER">
+                <padding>
+                    <Insets bottom="40" left="30" right="30" top="10"/>
+                </padding>
+
+                <!-- SUCCESS HEADER -->
+                <VBox spacing="10" alignment="CENTER" styleClass="success-header">
+                    <StackPane styleClass="check-icon-container">
+                        <Label text="✓" styleClass="check-icon"/>
+                    </StackPane>
+                    <Label text="¡Compra Exitosa!" styleClass="success-title"/>
+                    <Label text="Tu boleto ha sido confirmado" styleClass="success-subtitle"/>
+                </VBox>
+
+                <!-- TICKET CARD -->
+                <VBox styleClass="ticket-card" spacing="0" maxWidth="520">
+
+                    <!-- Ticket Header -->
+                    <HBox spacing="15" alignment="CENTER_LEFT" styleClass="ticket-header">
+                        <Label text="⚽" styleClass="ticket-icon"/>
+                        <VBox spacing="2">
+                            <Label text="TicketPremium" styleClass="ticket-brand"/>
+                            <Label text="Comprobante de Compra" styleClass="ticket-subtitle"/>
+                        </VBox>
+                    </HBox>
+
+                    <!-- Ticket Body -->
+                    <VBox spacing="0" styleClass="ticket-body">
+
+                        <!-- Client Data Section -->
+                        <VBox spacing="8" styleClass="ticket-section">
+                            <Label text="DATOS DEL CLIENTE" styleClass="section-title"/>
+                            <HBox styleClass="ticket-row">
+                                <Label text="Cliente" styleClass="row-label"/>
+                                <Region HBox.hgrow="always"/>
+                                <Label fx:id="lblCliente" styleClass="row-value"/>
+                            </HBox>
+                            <HBox styleClass="ticket-row">
+                                <Label text="Cédula" styleClass="row-label"/>
+                                <Region HBox.hgrow="always"/>
+                                <Label fx:id="lblCedula" styleClass="row-value"/>
+                            </HBox>
+                            <HBox styleClass="ticket-row">
+                                <Label text="Factura Nro." styleClass="row-label"/>
+                                <Region HBox.hgrow="always"/>
+                                <Label fx:id="lblFacturaId" styleClass="row-value factura-id"/>
+                            </HBox>
+                            <HBox styleClass="ticket-row">
+                                <Label text="Fecha" styleClass="row-label"/>
+                                <Region HBox.hgrow="always"/>
+                                <Label fx:id="lblFecha" styleClass="row-value"/>
+                            </HBox>
+                        </VBox>
+
+                        <!-- Event Details Section -->
+                        <VBox spacing="8" styleClass="ticket-section">
+                            <Label text="DETALLE DEL EVENTO" styleClass="section-title"/>
+                            <HBox styleClass="ticket-row">
+                                <Label text="Partido" styleClass="row-label"/>
+                                <Region HBox.hgrow="always"/>
+                                <Label fx:id="lblPartido" styleClass="row-value"/>
+                            </HBox>
+                            <HBox styleClass="ticket-row">
+                                <Label text="Localidad" styleClass="row-label"/>
+                                <Region HBox.hgrow="always"/>
+                                <Label fx:id="lblLocalidad" styleClass="row-value localidad-highlight"/>
+                            </HBox>
+                            <HBox styleClass="ticket-row">
+                                <Label text="Cantidad" styleClass="row-label"/>
+                                <Region HBox.hgrow="always"/>
+                                <Label fx:id="lblCantidad" styleClass="row-value"/>
+                            </HBox>
+                            <HBox styleClass="ticket-row">
+                                <Label text="Precio Unitario" styleClass="row-label"/>
+                                <Region HBox.hgrow="always"/>
+                                <Label fx:id="lblPrecioUnitario" styleClass="row-value"/>
+                            </HBox>
+                        </VBox>
+
+                        <!-- Value Breakdown Section -->
+                        <VBox spacing="8" styleClass="ticket-section">
+                            <Label text="DESGLOSE DE VALORES" styleClass="section-title"/>
+                            <HBox styleClass="ticket-row">
+                                <Label text="Base Imponible (Subtotal)" styleClass="row-label"/>
+                                <Region HBox.hgrow="always"/>
+                                <Label fx:id="lblSubtotal" styleClass="row-value"/>
+                            </HBox>
+                            <HBox styleClass="ticket-row">
+                                <Label text="IVA (15%)" styleClass="row-label"/>
+                                <Region HBox.hgrow="always"/>
+                                <Label fx:id="lblIva" styleClass="row-value"/>
+                            </HBox>
+                            <Separator styleClass="ticket-divider"/>
+                            <HBox styleClass="ticket-row total-row">
+                                <Label text="VALOR TOTAL A PAGAR" styleClass="total-label"/>
+                                <Region HBox.hgrow="always"/>
+                                <Label fx:id="lblTotal" styleClass="total-value"/>
+                            </HBox>
+                        </VBox>
+                    </VBox>
+
+                    <!-- Ticket Footer -->
+                    <HBox alignment="CENTER" styleClass="ticket-footer">
+                        <Label text="Gracias por su compra - TicketPremium" styleClass="footer-text"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Action Buttons -->
+                <HBox spacing="15" alignment="CENTER">
+                    <Button fx:id="btnComprarMas" text="Comprar más boletos" styleClass="btn-primary-action" onAction="#onComprarMas"/>
+                    <Button fx:id="btnVerReportes" text="Ver Reportes" styleClass="btn-secondary-action" onAction="#onVerReportes"/>
+                </HBox>
+            </VBox>
+        </ScrollPane>
+    </center>
+</BorderPane>

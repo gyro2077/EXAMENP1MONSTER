@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="ec.edu.espe.ticketpremium.controllers.DashboardController"
+            styleClass="dashboard-root" stylesheets="@../styles/main.css">
+
+    <left>
+        <VBox styleClass="sidebar" spacing="0">
+            <padding>
+                <Insets bottom="30" left="20" right="20" top="30"/>
+            </padding>
+
+            <VBox styleClass="sidebar-logo" spacing="10" alignment="CENTER">
+                <Label text="⚽" styleClass="sidebar-logo-icon"/>
+                <Label text="TICKET" styleClass="sidebar-logo-text"/>
+                <Label text="PREMIUM" styleClass="sidebar-logo-sub"/>
+            </VBox>
+
+            <Separator styleClass="sidebar-divider"/>
+
+            <VBox styleClass="sidebar-menu" spacing="8">
+                <Label text="MENU" styleClass="sidebar-menu-label"/>
+
+                <Button fx:id="btnPartidos" text="⚽  Comprar Boletos" styleClass="sidebar-btn active" onAction="#onShowPartidos" maxWidth="Infinity"/>
+                <Button fx:id="btnReportes" text="📊  Reporte de Ventas" styleClass="sidebar-btn" onAction="#onShowReportes" maxWidth="Infinity"/>
+            </VBox>
+
+            <Region VBox.vgrow="always"/>
+
+            <Separator styleClass="sidebar-divider"/>
+
+            <VBox styleClass="sidebar-user" spacing="10">
+                <Label fx:id="lblUser" text="MONSTER" styleClass="sidebar-username"/>
+                <Label text="Cliente Premium" styleClass="sidebar-role"/>
+                <Button text="🚪  Cerrar Sesion" styleClass="sidebar-logout-btn" onAction="#onLogout" maxWidth="Infinity"/>
+            </VBox>
+        </VBox>
+    </left>
+
+    <center>
+        <StackPane fx:id="contentArea" styleClass="content-area"/>
+    </center>
+</BorderPane>

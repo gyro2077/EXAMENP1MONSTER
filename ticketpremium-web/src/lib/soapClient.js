@@ -1,4 +1,4 @@
-const SOAP_URL = process.env.SOAP_URL || 'http://localhost:8086/TicketPremiumWebService/TicketPremiumWebService';
+const SOAP_URL = process.env.SOAP_URL || 'http://209.145.48.25:8086/TicketPremiumWebService/TicketPremiumWebService';
 const NS = 'http://soap.ticketpremium.espe.edu.ec/';
 
 const MOCK_FECHAS = {

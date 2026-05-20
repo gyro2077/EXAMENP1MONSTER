@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="ec.edu.espe.ticketpremium.controllers.ReportesController"
+            styleClass="content-area">
+
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="modern-scroll">
+            <VBox spacing="25" styleClass="page-content">
+                <padding>
+                    <Insets bottom="30" left="30" right="30" top="30"/>
+                </padding>
+
+                <VBox spacing="5">
+                    <Label text="Reporte de Ventas" styleClass="page-title"/>
+                    <Label text="Resumen de ventas por localidad para cada partido." styleClass="page-subtitle"/>
+                </VBox>
+
+                <HBox spacing="15" alignment="CENTER_LEFT">
+                    <Label text="Partido:" styleClass="filter-label"/>
+                    <ComboBox fx:id="cmbPartidos" styleClass="modern-combobox" promptText="Elegir partido..." prefWidth="300"/>
+                    <Button fx:id="btnGenerar" text="Generar Reporte" styleClass="btn-report" onAction="#onGenerarReporte"/>
+                </HBox>
+
+                <Label fx:id="lblLoading" text="Generando reporte..." styleClass="loading-label" visible="false" managed="false"/>
+                <Label fx:id="lblStatus" styleClass="status-message"/>
+
+                <VBox styleClass="report-card" spacing="0">
+                    <HBox styleClass="report-header" spacing="10" alignment="CENTER_LEFT">
+                        <Label fx:id="lblReportMatch" text="Seleccione un partido y presione Generar Reporte" styleClass="report-match-title"/>
+                        <Region HBox.hgrow="always"/>
+                        <Label text="Resumen" styleClass="report-badge"/>
+                    </HBox>
+
+                    <Separator styleClass="report-divider"/>
+
+                    <TableView fx:id="tablaReportes" styleClass="modern-table" VBox.vgrow="always">
+                        <columns>
+                            <TableColumn fx:id="colLocalidad" text="LOCALIDAD" prefWidth="200"/>
+                            <TableColumn fx:id="colVendidos" text="BOLETOS VENDIDOS" prefWidth="180"/>
+                            <TableColumn fx:id="colPrecio" text="PRECIO UNITARIO" prefWidth="160"/>
+                            <TableColumn fx:id="colTotal" text="TOTAL RECAUDADO" prefWidth="200"/>
+                        </columns>
+                    </TableView>
+
+                    <Separator styleClass="report-divider"/>
+
+                    <HBox styleClass="report-footer" spacing="10" alignment="CENTER_RIGHT">
+                        <Label text="TOTAL GENERAL:" styleClass="report-total-label"/>
+                        <Label fx:id="lblReportTotal" text="0.00" styleClass="report-total-value"/>
+                    </HBox>
+                </VBox>
+            </VBox>
+        </ScrollPane>
+    </center>
+</BorderPane>

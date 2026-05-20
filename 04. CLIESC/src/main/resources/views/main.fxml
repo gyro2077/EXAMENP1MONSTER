@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="ec.edu.espe.ticketpremium.controllers.MainController"
+            styleClass="dashboard-root" stylesheets="@../styles/main.css">
+
+    <top>
+        <HBox styleClass="topbar" alignment="CENTER_LEFT" spacing="20">
+            <HBox spacing="10" alignment="CENTER">
+                <Label text="⚽" styleClass="logo-icon"/>
+                <Label text="TICKET PREMIUM" styleClass="logo-text"/>
+            </HBox>
+            <Region HBox.hgrow="always"/>
+            <HBox spacing="30">
+                <Label text="INICIO" styleClass="nav-link active"/>
+                <Label text="PARTIDOS" styleClass="nav-link"/>
+                <Label text="ESTADIOS" styleClass="nav-link"/>
+                <Label text="AYUDA" styleClass="nav-link"/>
+            </HBox>
+            <Button text="CERRAR SESIÓN" styleClass="btn-logout-top" onAction="#onLogout"/>
+        </HBox>
+    </top>
+
+    <center>
+        <ScrollPane styleClass="dashboard-scroll" fitToWidth="true" fitToHeight="true">
+            <VBox styleClass="main-content" spacing="30">
+                <padding>
+                    <Insets bottom="30" left="30" right="30" top="30"/>
+                </padding>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <StackPane styleClass="live-indicator">
+                        <Label text="●" styleClass="live-dot"/>
+                    </StackPane>
+                    <Label text="EXPERIENCIA EN VIVO 2024" styleClass="live-tag"/>
+                </HBox>
+
+                <VBox spacing="10">
+                    <Label text="Vive la Experiencia del Fútbol." styleClass="hero-title"/>
+                    <Label text="Acceso Premium a los Mejores Partidos." styleClass="hero-subtitle"/>
+                    <Label text="Accede a secciones VIP exclusivas, privilegiadas y palcos ejecutivos en los estadio más icónicos del mundo."
+                           styleClass="hero-description" wrapText="true" maxWidth="600"/>
+                </VBox>
+
+                <HBox spacing="20">
+                    <VBox styleClass="section-header">
+                        <Label text="Próximos Partidos" styleClass="section-title"/>
+                    </VBox>
+                    <Region HBox.hgrow="always"/>
+                    <HBox spacing="5">
+                        <Button text="◀" styleClass="nav-btn"/>
+                        <Button text="▶" styleClass="nav-btn"/>
+                    </HBox>
+                </HBox>
+
+                <HBox fx:id="partidosContainer" spacing="20" alignment="CENTER_LEFT"/>
+
+                <VBox styleClass="card-glass" spacing="20">
+                    <HBox spacing="20" alignment="CENTER_LEFT">
+                        <VBox spacing="5">
+                            <Label text="Seleccionar Categoría" styleClass="card-title"/>
+                            <Label fx:id="lblMatchSelected" text="Seleccione un partido primero" styleClass="match-info"/>
+                        </VBox>
+                        <Region HBox.hgrow="always"/>
+                        <HBox spacing="15" alignment="CENTER">
+                            <HBox spacing="5" alignment="CENTER">
+                                <StackPane styleClass="dot-available"/>
+                                <Label text="Disponible" styleClass="status-text"/>
+                            </HBox>
+                            <HBox spacing="5" alignment="CENTER">
+                                <StackPane styleClass="dot-reserved"/>
+                                <Label text="Reservado" styleClass="status-text"/>
+                            </HBox>
+                        </HBox>
+                    </HBox>
+
+                    <HBox fx:id="localidadesContainer" spacing="15" alignment="CENTER_LEFT"/>
+
+                    <VBox styleClass="stadium-preview">
+                        <Label text="MAPA INTERACTIVO DEL ESTADIO" styleClass="field-map-label"/>
+                    </VBox>
+                </VBox>
+
+                <HBox spacing="20" alignment="CENTER_LEFT">
+                    <VBox styleClass="card-checkout" maxWidth="400" VBox.vgrow="always">
+                        <HBox spacing="10" alignment="CENTER">
+                            <Label text="🛒" styleClass="cart-icon"/>
+                            <Label text="Su Pedido" styleClass="checkout-title"/>
+                        </HBox>
+
+                        <VBox fx:id="orderDetails" spacing="10">
+                            <Label text="Seleccione un partido y localidad para continuar" styleClass="empty-cart"/>
+                        </VBox>
+
+                        <VBox spacing="10" styleClass="totals-section">
+                            <HBox spacing="20">
+                                <Label text="Subtotal" styleClass="total-label"/>
+                                <Region HBox.hgrow="always"/>
+                                <Label fx:id="lblSubtotal" text="0.00" styleClass="total-value"/>
+                            </HBox>
+                            <HBox spacing="20">
+                                <Label text="IVA (15%)" styleClass="total-label"/>
+                                <Region HBox.hgrow="always"/>
+                                <Label fx:id="lblIva" text="0.00" styleClass="total-value"/>
+                            </HBox>
+                            <Separator styleClass="total-separator"/>
+                            <HBox spacing="20">
+                                <Label text="TOTAL" styleClass="total-final-label"/>
+                                <Region HBox.hgrow="always"/>
+                                <Label fx:id="lblTotal" text="0.00" styleClass="total-final-value"/>
+                            </HBox>
+                        </VBox>
+
+                        <Button fx:id="btnConfirmPurchase" text="CONFIRMAR COMPRA" styleClass="btn-purchase" disable="true" onAction="#onConfirmPurchase"/>
+
+                        <Label text="PAGO SEGURO HABILITADO" styleClass="secure-label"/>
+                    </VBox>
+
+                    <VBox styleClass="card-stats" spacing="20">
+                        <HBox spacing="10" alignment="CENTER">
+                            <Label text="📊" styleClass="stats-icon"/>
+                            <Label text="Estadísticas de Ventas" styleClass="stats-title"/>
+                        </HBox>
+
+                        <VBox spacing="15">
+                            <VBox spacing="5">
+                                <Label text="Partido Activo" styleClass="stats-label"/>
+                                <Label fx:id="lblActiveMatch" text="Seleccione un partido" styleClass="stats-value"/>
+                            </VBox>
+                            <Button text="VER REPORTE COMPLETO" styleClass="btn-report" onAction="#onViewReport"/>
+                        </VBox>
+
+                        <VBox spacing="5">
+                            <StackPane styleClass="progress-bar">
+                                <StackPane styleClass="progress-fill"/>
+                            </StackPane>
+                            <Label text="85% de Capacidad Alcanzada" styleClass="capacity-label"/>
+                        </VBox>
+                    </VBox>
+                </HBox>
+
+                <VBox styleClass="report-modal" fx:id="reportModal" visible="false" managed="false">
+                    <HBox spacing="20" alignment="CENTER">
+                        <VBox spacing="5">
+                            <Label text="Resumen de Ventas" styleClass="report-title"/>
+                            <Label fx:id="lblReportMatch" text="Seleccione un partido" styleClass="report-subtitle"/>
+                        </VBox>
+                        <Region HBox.hgrow="always"/>
+                        <Button text="✕" styleClass="btn-close" onAction="#closeReport"/>
+                    </HBox>
+
+                    <VBox styleClass="report-table">
+                        <HBox spacing="10" alignment="CENTER" styleClass="report-header">
+                            <Label text="Localidad" styleClass="report-header-text" prefWidth="150"/>
+                            <Label text="Vendidos" styleClass="report-header-text" prefWidth="100"/>
+                            <Label text="Total Recaudado" styleClass="report-header-text" prefWidth="150"/>
+                        </HBox>
+                        <VBox fx:id="reportContent" spacing="0"/>
+                    </VBox>
+
+                    <HBox spacing="20" alignment="CENTER_RIGHT" styleClass="report-footer">
+                        <Label text="TOTAL RECAUDADO:" styleClass="report-total-label"/>
+                        <Label fx:id="lblReportTotal" text="0.00" styleClass="report-total-value"/>
+                    </HBox>
+
+                    <Button text="CERRAR REPORTE" styleClass="btn-close-report" onAction="#closeReport"/>
+                </VBox>
+
+                <HBox fx:id="purchaseSuccess" visible="false" managed="false" spacing="10" alignment="CENTER" styleClass="success-toast">
+                    <Label text="✓" styleClass="success-icon"/>
+                    <Label text="¡COMPRA EXITOSA! FACTURA GENERADA." styleClass="success-text"/>
+                </HBox>
+
+                <Label fx:id="lblLoading" text="Cargando..." styleClass="loading-label" visible="false"/>
+                <Label fx:id="lblStatus" styleClass="status-message"/>
+            </VBox>
+        </ScrollPane>
+    </center>
+
+    <bottom>
+        <HBox styleClass="footer-bar" spacing="20" alignment="CENTER_LEFT">
+            <VBox spacing="2">
+                <Label text="TICKET PREMIUM" styleClass="footer-brand"/>
+                <Label text="© 2024 TICKET PREMIUM. TODOS LOS DERECHOS RESERVADOS." styleClass="footer-copyright"/>
+            </VBox>
+            <Region HBox.hgrow="always"/>
+            <HBox spacing="20">
+                <Label text="Política de Privacidad" styleClass="footer-link"/>
+                <Label text="Términos de Servicio" styleClass="footer-link"/>
+                <Label text="Centro de Ayuda" styleClass="footer-link"/>
+                <Label text="Guía del Estadio" styleClass="footer-link"/>
+            </HBox>
+        </HBox>
+    </bottom>
+</BorderPane>

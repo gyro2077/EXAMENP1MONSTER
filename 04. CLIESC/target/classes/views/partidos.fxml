@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="ec.edu.espe.ticketpremium.controllers.PartidosController"
+            styleClass="content-area">
+
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="modern-scroll">
+            <VBox spacing="25" styleClass="page-content">
+                <padding>
+                    <Insets bottom="30" left="30" right="30" top="30"/>
+                </padding>
+
+                <VBox spacing="5">
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <StackPane styleClass="live-indicator">
+                            <Label text="●" styleClass="live-dot"/>
+                        </StackPane>
+                        <Label text="EXPERIENCIA EN VIVO 2026" styleClass="live-tag"/>
+                    </HBox>
+                    <Label text="Comprar Boletos" styleClass="page-title"/>
+                    <Label text="Selecciona un partido y tu zona preferida para vivir la experiencia del futbol." styleClass="page-subtitle" wrapText="true"/>
+                </VBox>
+
+                <Label text="Proximos Partidos" styleClass="section-title"/>
+
+                <FlowPane fx:id="partidosContainer" hgap="20" vgap="20" styleClass="cards-grid"/>
+
+                <Label fx:id="lblStatus" styleClass="status-message"/>
+                <Label fx:id="lblLoading" text="Cargando partidos..." styleClass="loading-label" visible="false"/>
+
+                <HBox fx:id="purchaseSuccess" visible="false" managed="false" spacing="10" alignment="CENTER" styleClass="success-toast">
+                    <Label text="✓" styleClass="success-icon"/>
+                    <Label text="¡COMPRA EXITOSA! FACTURA GENERADA." styleClass="success-text"/>
+                </HBox>
+            </VBox>
+        </ScrollPane>
+    </center>
+
+    <right>
+        <VBox styleClass="cart-panel" spacing="0">
+            <padding>
+                <Insets bottom="0" left="0" right="0" top="0"/>
+            </padding>
+
+            <VBox styleClass="cart-header" spacing="10" alignment="CENTER">
+                <Label text="🛒" styleClass="cart-icon"/>
+                <Label text="Su Pedido" styleClass="cart-title"/>
+            </VBox>
+
+            <Separator styleClass="cart-divider"/>
+
+            <VBox styleClass="cart-body" spacing="15">
+                <Label fx:id="lblMatchSelected" text="Seleccione un partido" styleClass="cart-match-label"/>
+
+                <ScrollPane fitToWidth="true" styleClass="localidades-scroll" VBox.vgrow="always">
+                    <VBox fx:id="localidadesContainer" spacing="10"/>
+                </ScrollPane>
+
+                <VBox fx:id="orderDetails" spacing="10">
+                    <Label text="Seleccione un partido y localidad" styleClass="empty-cart"/>
+                </VBox>
+
+                <HBox fx:id="quantitySelector" visible="false" spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Cantidad:" styleClass="quantity-label"/>
+                    <Button fx:id="btnMinus" text="−" styleClass="qty-btn" onAction="#onDecreaseQty"/>
+                    <Label fx:id="lblQuantity" text="1" styleClass="qty-value"/>
+                    <Button fx:id="btnPlus" text="+" styleClass="qty-btn" onAction="#onIncreaseQty"/>
+                </HBox>
+            </VBox>
+
+            <Separator styleClass="cart-divider"/>
+
+            <VBox styleClass="cart-totals" spacing="10">
+                <HBox spacing="10">
+                    <Label text="Subtotal" styleClass="total-label"/>
+                    <Region HBox.hgrow="always"/>
+                    <Label fx:id="lblSubtotal" text="0.00" styleClass="total-value"/>
+                </HBox>
+                <HBox spacing="10">
+                    <Label text="IVA (15%)" styleClass="total-label"/>
+                    <Region HBox.hgrow="always"/>
+                    <Label fx:id="lblIva" text="0.00" styleClass="total-value"/>
+                </HBox>
+                <Separator styleClass="total-separator"/>
+                <HBox spacing="10">
+                    <Label text="TOTAL" styleClass="total-final-label"/>
+                    <Region HBox.hgrow="always"/>
+                    <Label fx:id="lblTotal" text="0.00" styleClass="total-final-value"/>
+                </HBox>
+
+                <Button fx:id="btnConfirmPurchase" text="CONFIRMAR COMPRA" styleClass="btn-purchase" disable="true" onAction="#onConfirmPurchase" maxWidth="Infinity"/>
+
+                <Label text="PAGO SEGURO HABILITADO" styleClass="secure-label" alignment="CENTER"/>
+            </VBox>
+        </VBox>
+    </right>
+</BorderPane>

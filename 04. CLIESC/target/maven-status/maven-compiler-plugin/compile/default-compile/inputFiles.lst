@@ -1,0 +1,15 @@
+/home/gyro/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/EXAMENP1/04. CLIESC/src/main/java/ec/edu/espe/ticketpremium/app/Main.java
+/home/gyro/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/EXAMENP1/04. CLIESC/src/main/java/ec/edu/espe/ticketpremium/controllers/ReportesController.java
+/home/gyro/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/EXAMENP1/04. CLIESC/src/main/java/ec/edu/espe/ticketpremium/controllers/FacturaController.java
+/home/gyro/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/EXAMENP1/04. CLIESC/src/main/java/ec/edu/espe/ticketpremium/viewmodels/MainViewModel.java
+/home/gyro/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/EXAMENP1/04. CLIESC/src/main/java/ec/edu/espe/ticketpremium/controllers/LoginController.java
+/home/gyro/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/EXAMENP1/04. CLIESC/src/main/java/ec/edu/espe/ticketpremium/controllers/PartidosController.java
+/home/gyro/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/EXAMENP1/04. CLIESC/src/main/java/ec/edu/espe/ticketpremium/viewmodels/LoginViewModel.java
+/home/gyro/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/EXAMENP1/04. CLIESC/src/main/java/ec/edu/espe/ticketpremium/models/PartidoDTO.java
+/home/gyro/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/EXAMENP1/04. CLIESC/src/main/java/ec/edu/espe/ticketpremium/controllers/MainController.java
+/home/gyro/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/EXAMENP1/04. CLIESC/src/main/java/ec/edu/espe/ticketpremium/controllers/DashboardController.java
+/home/gyro/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/EXAMENP1/04. CLIESC/src/main/java/ec/edu/espe/ticketpremium/models/LocalidadDTO.java
+/home/gyro/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/EXAMENP1/04. CLIESC/src/main/java/ec/edu/espe/ticketpremium/models/ComprobanteDTO.java
+/home/gyro/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/EXAMENP1/04. CLIESC/src/main/java/ec/edu/espe/ticketpremium/models/ReporteDTO.java
+/home/gyro/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/EXAMENP1/04. CLIESC/src/main/java/ec/edu/espe/ticketpremium/models/SesionDTO.java
+/home/gyro/Documents/ULTIMO_SEMESTRE/ARQUITECTURA/EXAMENP1/04. CLIESC/src/main/java/ec/edu/espe/ticketpremium/services/SoapClient.java

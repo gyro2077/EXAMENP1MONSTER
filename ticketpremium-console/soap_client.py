@@ -2,7 +2,7 @@ from datetime import datetime
 from zeep import Client
 from zeep.exceptions import Fault
 
-WSDL_URL = "http://localhost:8086/TicketPremiumWebService/TicketPremiumWebService?wsdl"
+WSDL_URL = "http://209.145.48.25:8086/TicketPremiumWebService/TicketPremiumWebService?wsdl"
 
 MESES = {
     1: "Ene", 2: "Feb", 3: "Mar", 4: "Abr", 5: "May", 6: "Jun",
